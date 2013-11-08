@@ -1,0 +1,4 @@
+name: IRC
+main: net.rymate.bungee.irc.IRCMain
+author: rymate1234
+version: 1.0
