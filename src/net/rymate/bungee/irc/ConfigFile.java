@@ -21,6 +21,7 @@ public class ConfigFile {
     public String ircNick = c.getString("IRC Nickname", "MyFirstBungeeIrcBot");
     public String nickservPass = c.getString("IRC Nickserv Password", "");
     public String channelName = c.getString("Channel Name", "#icantconfig");
+    public String chatFormat = c.getString("Chat Format", "&b[%from] %player:&f %message");
     public boolean crossServerChat = c.getBoolean("Cross Server Chat", false);
     
 }

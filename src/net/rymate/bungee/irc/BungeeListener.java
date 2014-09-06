@@ -12,35 +12,21 @@ import java.util.ArrayList;
 import java.util.List;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
-import org.pircbotx.PircBotX;
 
 /**
  * Created with IntelliJ IDEA. User: Ryan Date: 01/11/13 Time: 21:32 To change
  * this template use File | Settings | File Templates.
  */
-public class BungeeListener extends Command
-        implements Listener {
+public class BungeeListener implements Listener {
 
     public IRCMain pasta;
     public List<String> input = new ArrayList();
-    private PircBotX irc;
+    private IRCListener irc;
 
     public BungeeListener(IRCMain Nethad) {
-        super("netchat", "netchat.use", new String[0]);
         this.pasta = Nethad;
         this.pasta.getProxy().getPluginManager().registerListener(this.pasta, this);
         this.irc = this.pasta.getBot();
-    }
-
-    public void execute(CommandSender s, String[] args) {
-        if (!this.input.contains(s.getName())) {
-            this.input.add(s.getName());
-            s.sendMessage(ChatColor.DARK_GREEN + "NetChat focus toggled on.");
-            return;
-        }
-
-        this.input.remove(s.getName());
-        s.sendMessage(ChatColor.DARK_RED + "NetChat focus toggled off.");
     }
 
     @EventHandler
@@ -51,15 +37,23 @@ public class BungeeListener extends Command
 
         if ((e.getSender() instanceof ProxiedPlayer)) {
             ProxiedPlayer s = (ProxiedPlayer) e.getSender();
+            
+            String format = pasta.getConfig().chatFormat;
+            String chatMessage = pasta.decolorize(e.getMessage());
+            format = pasta.replaceMinecraftPlaceholders(s, chatMessage, format);
+            format = pasta.colorize(format);
+            
             if (pasta.getConfig().crossServerChat) {
                 e.setCancelled(true);
                 for (ProxiedPlayer pl : this.pasta.getProxy().getPlayers()) {
                     if (pl instanceof ProxiedPlayer) {
-                        pl.sendMessage(ChatColor.DARK_RED + "[" + ChatColor.AQUA + s.getServer().getInfo().getName() + ChatColor.DARK_RED + "] " + ChatColor.BLUE + s.getName() + ChatColor.WHITE + ": " + e.getMessage());
+                        pl.sendMessage(format);
                     }
                 }
             }
-            irc.sendIRC().message(pasta.getConfig().channelName, "[" + s.getServer().getInfo().getName() + "] " + "<" + s.getDisplayName() + "> " + e.getMessage());
+            
+            format = pasta.decolorize(format);
+            irc.sendMessage(pasta.getConfig().channelName, format);
             return;
 
         }
@@ -70,11 +64,12 @@ public class BungeeListener extends Command
         if (e.isCancelled()) {
             return;
         }
-        irc.sendIRC().message(pasta.getConfig().channelName, e.getConnection().getName() + " joined the server");
+        irc.sendMessage(pasta.getConfig().channelName, e.getConnection().getName() + " joined the server");
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerDisconnectEvent e) {
-        irc.sendIRC().message(pasta.getConfig().channelName, e.getPlayer().getDisplayName() + " left the server");
+        irc.sendMessage(pasta.getConfig().channelName, e.getPlayer().getDisplayName() + " left the server");
     }
+
 }

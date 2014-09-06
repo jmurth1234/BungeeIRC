@@ -4,7 +4,7 @@
     
     <groupId>net.rymate.bungee.irc</groupId>
     <artifactId>BungeeIRC</artifactId>
-    <version>v1</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
     
     <name>BungeeIRC</name>
@@ -39,31 +39,7 @@
                     <target>1.5</target>
                 </configuration>
             </plugin>
-            
-            <!-- Make a unified jar with all of the dependencies -->
-            <plugin>              
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <manifestEntries>
-                                        <Main-Class>org.thelq.pircbotx.Main</Main-Class>
-                                        <Class-Path>.</Class-Path>
-                                    </manifestEntries>                                                                      
-                                </transformer>
-                            </transformers>
-                            <finalName>${project.artifactId}-unified</finalName>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+
         </plugins>
         <resources>
             <resource>
@@ -78,18 +54,6 @@
     </build>
     
     <dependencies>
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.6.2-R1.0</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.pircbotx</groupId>
-            <artifactId>pircbotx</artifactId>
-            <version>2.0</version>
-        </dependency>
-        
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-api</artifactId>
